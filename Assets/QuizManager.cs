@@ -2,31 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 
- public class QuizManager : MonoBehaviour
+public class QuizManager : MonoBehaviour
 {
-
-        internal GameManager _gameManager;
-
-
-
-
-        private static QuizManager _instance;
-
-        public static QuizManager Instance { get { return _instance; } }
+    private QuestionSource questionSource;
+    internal GameManager _gameManager;
+    private static QuizManager _instance;
+    List<string> questionsList = new List<string>();
+    int currentQuestion;
 
 
-        private void Awake()
+
+    public static QuizManager Instance { get { return _instance; } }
+
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
         {
-            if (_instance != null && _instance != this)
-            {
-                Destroy(this.gameObject);
-            }
-            else
-            {
-                _instance = this;
-            }
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
         }
     }
+
+
+
+    public void LoadQuestions()
+    {
+        foreach(string found in questionSource.Questions)
+        {
+            questionsList.Add(found);
+        }
+        
+    }
+    public void ShowNext()
+    {
+
+    }
+    
+
+}
 
 
 

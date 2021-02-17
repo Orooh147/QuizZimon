@@ -14,17 +14,16 @@ public class GameManager : MonoBehaviour
         InitQuiz();
 
     }
-    
-
     public void InitQuiz()
     {
         _quizManager = QuizManager.Instance;
         _quizManager._gameManager = this;
     }
+  
 
     public void ReloadRound()
     {
-
+        _quizManager.LoadQuestions();
     }
         
     public IEnumerator RoundTimer()
