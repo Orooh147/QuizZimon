@@ -12,7 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 209ae7c0ef765fd40bbbbd92c7072c17, type: 3}
   m_Name: New Question Source
   m_EditorClassIdentifier: 
-  Questions:
-  - hi
-  - hello
-  - hello there
+  questions:
+  - question: 'pick 1 '
+    answer1: dasd
+    answer2: asd
+    answer3: asdasda
+    answer4: asdasd
+    rightAns: 1
+  - question: pick 3
+    answer1: sdasd
+    answer2: dasd
+    answer3: sdasd
+    answer4: asdasd
+    rightAns: 3
+  - question: pick4
+    answer1: sadasd
+    answer2: asdasdasda
+    answer3: dasdas
+    answer4: asdasd
+    rightAns: 4
+  - question: pick2
+    answer1: asdasd
+    answer2: asdasd
+    answer3: sdasd
+    answer4: sdasd
+    rightAns: 2

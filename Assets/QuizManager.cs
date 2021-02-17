@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class QuizManager : MonoBehaviour
 {
-    private QuestionSource questionSource;
+    [SerializeField] QuestionSource questionSource;
     internal GameManager _gameManager;
     private static QuizManager _instance;
-    List<string> questionsList = new List<string>();
+    List<Question> questionsList = new List<Question>();
     int currentQuestion;
+  
 
 
 
@@ -28,18 +29,44 @@ public class QuizManager : MonoBehaviour
     }
 
 
-
+ 
     public void LoadQuestions()
     {
-        foreach(string found in questionSource.Questions)
+        Question[] questionSheet = new Question[questionSource.questions.Length];
+        for (int i = 0; i < questionSheet.Length; i++)
         {
-            questionsList.Add(found);
+            questionSheet[i] = new Question();
         }
-        
+
+
+        for (int i = 0; i < questionSource.questions.Length; i++)
+        {
+
+            questionSheet[i].insertData(questionSource.questions[i].question, questionSource.questions[i].answer1, questionSource.questions[i].answer2,
+                questionSource.questions[i].answer3, questionSource.questions[i].answer4, questionSource.questions[i].rightAns);
+     
+        }
+        for (int i = 0; i < questionSheet.Length; i++)
+        {
+            questionsList.Add(questionSheet[i]);
+            questionSheet[i].questionNumber = i;
+            //adjust for computer numbers
+            questionSheet[i].rightAns --;
+        }
+
+            Debug.Log(questionsList.Count);
+        _gameManager.InsertQuestionList(questionsList);
+       
+           
+       
     }
     public void ShowNext()
     {
 
+    }
+    public void ChangeScore()
+    {
+        _gameManager.SetScore();
     }
     
 
