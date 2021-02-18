@@ -8,7 +8,7 @@ public class Player
 
 
    public string id;
-   public int score = 6;
+   public int score = 0;
 
 
 

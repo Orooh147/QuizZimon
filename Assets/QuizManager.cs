@@ -6,9 +6,12 @@ public class QuizManager : MonoBehaviour
 {
     [SerializeField] QuestionSource questionSource;
     internal GameManager _gameManager;
+    internal GameBoard _gameBoard;
     private static QuizManager _instance;
-    List<Question> questionsList = new List<Question>();
-    int currentQuestion;
+    internal List<Question> questionsList = new List<Question>();
+    int currentQuestion=0;
+    [SerializeField]int TimeBetweenRounds;
+    bool gameOn=true;
   
 
 
@@ -27,11 +30,49 @@ public class QuizManager : MonoBehaviour
             _instance = this;
         }
     }
-
-
- 
-    public void LoadQuestions()
+    public void StartQuiz()
     {
+        StartCoroutine(Quiz());
+    }
+    public IEnumerator Quiz()
+    {
+        for (int i = 0; i < questionsList.Count; i++)
+        {
+            currentQuestion = i;
+            if (i == questionsList.Count - 1)
+            {
+            PostQuestion(currentQuestion,true);
+            }
+            else
+            {
+
+            PostQuestion(currentQuestion,false);
+            }
+        yield return new WaitForSeconds(TimeBetweenRounds);
+            Debug.Log("roundover");
+        }
+      //  while (gameOn)
+       // {
+
+           // _gameManager.CheckGameCondition();
+
+        //    yield return new WaitForSeconds(0.5f);
+       // }
+        
+
+
+        Debug.Log("quizover");
+    }
+
+
+    public void LoadGame()
+    {
+        StartCoroutine(LoadQuestions());
+    }
+
+    public IEnumerator LoadQuestions()
+    {
+        
         Question[] questionSheet = new Question[questionSource.questions.Length];
         for (int i = 0; i < questionSheet.Length; i++)
         {
@@ -51,22 +92,27 @@ public class QuizManager : MonoBehaviour
             questionsList.Add(questionSheet[i]);
             questionSheet[i].questionNumber = i;
             //adjust for computer numbers
-            questionSheet[i].rightAns --;
+           
+            
         }
 
             Debug.Log(questionsList.Count);
         _gameManager.InsertQuestionList(questionsList);
-       
-           
+        yield return new WaitForSeconds(3);
+        StartQuiz();
        
     }
-    public void ShowNext()
+    public void PostQuestion(int questionNumber,bool isLast)
     {
-
+        _gameBoard.PresentQuestion(questionsList[questionNumber],isLast);
     }
     public void ChangeScore()
     {
         _gameManager.SetScore();
+    }
+    public void ReciveAnswer(int ansNumber,bool isLast)
+    {
+        _gameManager.CheckAnsWithServer(ansNumber,questionsList[currentQuestion].questionNumber,isLast);
     }
     
 

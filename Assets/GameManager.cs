@@ -5,18 +5,19 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-
+    
     QuizManager _quizManager;
     WebHandler _webHandler;
     internal Player sessionPlayer;
 
     [SerializeField] float RoundTime;
+    internal bool gameReady;
 
     public void Start()
     {
         _webHandler = WebHandler.Instance;
-        InitQuiz();
-
+       
+        
     }
     public void InitQuiz()
     {
@@ -25,8 +26,10 @@ public class GameManager : MonoBehaviour
         {
         _quizManager._gameManager = this;
         }
-        _quizManager.LoadQuestions();
-       
+
+        _webHandler.DeleteQuestionsRequest();
+        _quizManager.LoadGame();
+       // _quizManager.StartQuiz();
     }
     public void CreateCharacter(string id)
     {
@@ -36,7 +39,29 @@ public class GameManager : MonoBehaviour
 
     public void ReloadRound()
     {
-        _quizManager.LoadQuestions();
+        
+    }
+    public void CheckAnsWithServer(int ans,int question,bool isLast)
+    {
+        _webHandler.CheckPlayerAnswer(sessionPlayer.id, IntToString(ans),IntToString(question),isLast);
+        
+    }
+    public void CheckGameCondition()
+    {
+        _webHandler.CheckServerGameCondition();
+
+    }
+    public void RecieveAnswer(bool rightAnswer)
+    {
+        if (rightAnswer)
+        {
+            sessionPlayer.score += 1;
+            SetScore();
+        }
+        else
+        {
+            Debug.Log("wrong answer");
+        }
     }
         
     public IEnumerator RoundTimer()
@@ -59,15 +84,42 @@ public class GameManager : MonoBehaviour
     }
     public void SetScore()
     {
-        _webHandler.SetScoreRequest(sessionPlayer.id,IntToString(sessionPlayer.score));
+        Debug.Log("setting score!!!");
+        _webHandler.SetBattleScoreRequest(sessionPlayer.id,IntToString(sessionPlayer.score));
     }
     public string IntToString(int intsource)
     {
         return intsource.ToString();
     }
-    public void StartGame()
+    public void GoToLoadingScreen()
     {
         SceneManager.LoadScene(3);
+        StartCoroutine(WaitForPlayers());
+
+    }
+    public IEnumerator WaitForPlayers()
+    {
+
+        while (!gameReady)
+        {
+
+
+            _webHandler.BattleRequest();
+
+
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        StartGame();
+     
+
+
+    }
+    public void StartGame()
+    {
+        SceneManager.LoadScene(4);
+        InitQuiz();
+
     }
     public void InsertQuestionList(List<Question> questionList)
     {

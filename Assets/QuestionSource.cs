@@ -19,7 +19,7 @@ public class Question
         answer2 = _answer2;
         answer3 = _answer3;
         answer4 = _answer4;
-        rightAns = _rightAns;
+        rightAns = _rightAns; 
     }
     public string question;
     public string answer1;
@@ -27,7 +27,7 @@ public class Question
     public string answer3;
     public string answer4;
     public int rightAns;
-    internal int questionNumber=0;
+    internal int questionNumber=1;
 
 
 

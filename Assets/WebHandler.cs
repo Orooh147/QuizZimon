@@ -33,9 +33,13 @@ public class WebHandler : MonoBehaviour
         StartCoroutine(Login(username, password));
 
     }
+    public void SetBattleScoreRequest(string id, string newscore)
+    {
+        StartCoroutine(SetBattleScore(id,newscore));
+    }
     public void SetScoreRequest(string id, string newscore)
     {
-        StartCoroutine(SetScore(id,newscore));
+        StartCoroutine(SetScore(id, newscore));
     }
     public void InsertQuestionsList(List<Question> questionList)
     {
@@ -86,9 +90,72 @@ public class WebHandler : MonoBehaviour
             {
                 Debug.Log(www.downloadHandler.text);
                 _gameManager.CreateCharacter(www.downloadHandler.text);
-                _gameManager.StartGame();
+                StartCoroutine(AssignBattle(www.downloadHandler.text));
+                
             }
         }
+    }
+   
+        
+   
+    IEnumerator AssignBattle(string id)
+    {
+        
+        WWWForm form = new WWWForm();
+        form.AddField("id", id);
+        
+
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/UnityBackend/AssignBattle.php", form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
+                
+                   _gameManager.GoToLoadingScreen();
+                
+
+
+            }
+        }
+    }
+    public void BattleRequest()
+    {
+        StartCoroutine(StartCheck());
+    }
+    IEnumerator StartCheck()
+    {
+        
+        WWWForm form = new WWWForm();
+       
+
+
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/UnityBackend/StartCheck.php", form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
+                if (www.downloadHandler.text == "'2'")
+                {
+                    _gameManager.gameReady = true;
+                }
+                else Debug.Log("waiting");
+
+
+            }
+        }
+                
     }
     IEnumerator RegisterUser(string username, string password)
     {
@@ -109,6 +176,29 @@ public class WebHandler : MonoBehaviour
                 Debug.Log(www.downloadHandler.text);
                 _gameManager.GoToScene(2);
                 
+            }
+        }
+    }
+    IEnumerator SetBattleScore(string id, string newScore)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("playerid", id);
+        form.AddField("scorevalue", newScore);
+        
+
+
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/UnityBackend/UpdateBattleScore.php", form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
+
             }
         }
     }
@@ -134,6 +224,111 @@ public class WebHandler : MonoBehaviour
             }
         }
     }
+    
+    public void CheckPlayerAnswer(string id,string rightanswer,string questionNumber,bool isLast)
+    {
+        StartCoroutine(AnswerCheck(id,rightanswer,questionNumber,isLast));
+    }
+    public void CheckServerGameCondition()
+    {
+        StartCoroutine(GameCheck());
+    }
+    IEnumerator GameCheck()
+    {
+        WWWForm form = new WWWForm();
+     
+
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/UnityBackend/GameCheck.php", form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
+                if (www.downloadHandler.text == "1")
+                {
+                    _gameManager.RecieveAnswer(true);
+                }
+                _gameManager.RecieveAnswer(false);
+
+            }
+        }
+    }
+    IEnumerator AnswerCheck(string id, string rightanswer,string questionNumber ,bool lastMoveDone)
+    {
+        
+        WWWForm form = new WWWForm();
+        form.AddField("playerid", id);
+        form.AddField("rightanswer", rightanswer);
+        form.AddField("number", questionNumber);
+        if (lastMoveDone)
+        {
+            
+            form.AddField("true", "1");
+        }
+        else
+        {
+           
+            form.AddField("true", "0");
+        }
+
+
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/UnityBackend/CheckAnswer.php", form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
+                if (www.downloadHandler.text == "1")
+                {
+                    _gameManager.RecieveAnswer(true);
+                }
+                else
+                {
+                _gameManager.RecieveAnswer(false);
+
+                }
+
+            }
+        }
+    }
+
+    public void DeleteQuestionsRequest()
+    {
+        StartCoroutine(DeleteQuestions());
+    }
+    IEnumerator DeleteQuestions()
+    {
+        WWWForm form = new WWWForm();
+
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/UnityBackend/DeleteQuestions.php", form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
+
+            }
+        }
+
+    }
+
+
+    
     IEnumerator InsertQuestions(List<Question> questionList)
     {
      
