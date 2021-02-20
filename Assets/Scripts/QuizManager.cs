@@ -125,7 +125,7 @@ public class QuizManager : MonoBehaviour
 
             Debug.Log(questionsList.Count);
         _gameManager.InsertQuestionList(questionsList);
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(0);
         StartQuiz();
        
     }

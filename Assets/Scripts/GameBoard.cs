@@ -12,6 +12,7 @@ public class GameBoard : MonoBehaviour
     [SerializeField] Text textanswer3;
     [SerializeField] Text textanswer4;
     [SerializeField] Text TimerText;
+    [SerializeField] Text TimerText2;
     bool lastQuestion=false;
     bool moveDone=true;
 
@@ -83,6 +84,7 @@ public class GameBoard : MonoBehaviour
         for (int i = 0; i < roundTime; i++)
         {
             TimerText.text = (roundTime - i).ToString();
+            TimerText2.text = (roundTime - i).ToString();
             yield return new WaitForSeconds(1);
         }
 
