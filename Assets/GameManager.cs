@@ -9,9 +9,15 @@ public class GameManager : MonoBehaviour
     QuizManager _quizManager;
     WebHandler _webHandler;
     internal Player sessionPlayer;
-
-    [SerializeField] float RoundTime;
+    internal string CompetitorName;
+    internal string WinnerUserName;
+    internal Winstate winstate;
+    internal ResultScreen _resultScreen;
+    internal WaitingRoom _WaitingRoom;
+    internal bool GameEnd;
+ 
     internal bool gameReady;
+    public int timeInCaulculatingScreen;
 
     public void Start()
     {
@@ -31,9 +37,10 @@ public class GameManager : MonoBehaviour
         _quizManager.LoadGame();
        // _quizManager.StartQuiz();
     }
-    public void CreateCharacter(string id)
+    public void CreateCharacter(string id,string userName)
     {
-        sessionPlayer = new Player(id);
+        sessionPlayer = new Player(id,userName);
+
     }
   
 
@@ -51,6 +58,28 @@ public class GameManager : MonoBehaviour
         _webHandler.CheckServerGameCondition();
 
     }
+    public void DeclareWinner(string winner)
+    {
+        _quizManager.winningCondition = winner;
+        GameOver();
+    }
+    public void GameOver()
+    {
+        _quizManager.gameOn = false;
+    }
+    public void QuitGame()
+    {
+        _webHandler.DeleteBattle();
+        StartCoroutine(EndGame());
+    }
+    IEnumerator EndGame()
+    {
+        while (!GameEnd)
+        {
+            yield return new WaitForFixedUpdate();
+        }
+        Application.Quit();
+    }
     public void RecieveAnswer(bool rightAnswer)
     {
         if (rightAnswer)
@@ -64,20 +93,12 @@ public class GameManager : MonoBehaviour
         }
     }
         
-    public IEnumerator RoundTimer()
-    {
-        yield return new WaitForSeconds(RoundTime);
-        RoundOver();
-
-    }
+ 
     public void SendNewQuestion()
     {
 
     }
-    public void RoundOver()
-    {
-
-    } 
+    
     public void SetRegistered()
     {
 
@@ -97,6 +118,16 @@ public class GameManager : MonoBehaviour
         StartCoroutine(WaitForPlayers());
 
     }
+    public void GoToQuizResultScreen()
+    {
+
+        SceneManager.LoadScene(5);
+    
+    }
+    public void GoToMainMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
     public IEnumerator WaitForPlayers()
     {
 
@@ -109,7 +140,8 @@ public class GameManager : MonoBehaviour
 
             yield return new WaitForSeconds(0.5f);
         }
-
+        _WaitingRoom.gameReady = true;
+        yield return new WaitForSeconds(_WaitingRoom.TimeFromReadyToStart + 1);
         StartGame();
      
 

@@ -13,7 +13,13 @@ public class Login : MonoBehaviour
     WebHandler _webHandler;
     SceneTransistor _sceneTransistor;
     public Button submitButton;
+    GameManager _gameManager;
 
+    public void Awake()
+    {
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
+    }
     private void Start()
     {
         _webHandler = WebHandler.Instance;
@@ -35,5 +41,9 @@ public class Login : MonoBehaviour
     public void VerifyInputs()
     {
         submitButton.interactable = (nameField.text.Length >= minNameLenght && passwordField.text.Length >= minPassLenght);
+    }
+    public void Back()
+    {
+        _gameManager.GoToMainMenu();
     }
 }

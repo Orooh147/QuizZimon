@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RoundTime: 0
+  timeInCaulculatingScreen: 0
 --- !u!114 &8487495738423240974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,3 +72,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   questionSource: {fileID: 11400000, guid: 4de3da5560d3ee947a2b597db0e6aabb, type: 2}
+  TimeBetweenRounds: 10

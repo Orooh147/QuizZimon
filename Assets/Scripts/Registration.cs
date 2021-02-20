@@ -12,8 +12,14 @@ public class Registration : MonoBehaviour
     // Start is called before the first frame update
     public InputField nameField;
     public InputField passwordField;
+    GameManager _gameManager;
 
     public Button submitButton;
+    public void Awake()
+    {
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+       
+    }
     private void Start()
     {
         _webHandler = WebHandler.Instance;
@@ -26,5 +32,9 @@ public class Registration : MonoBehaviour
     public void VerifyInputs()
     {
         submitButton.interactable = (nameField.text.Length >= minNameLeght && passwordField.text.Length >= minPassLeght);
+    }
+    public void Back()
+    {
+        _gameManager.GoToMainMenu();
     }
 }
